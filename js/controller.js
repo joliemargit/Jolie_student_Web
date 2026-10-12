@@ -1,7 +1,25 @@
 const StudentController = {
+  // Single source of truth for validation (form + create/update)
+  validate(p, isEdit = false) {
+    const errors = {};
+    const id = (p.studentId || "").trim();
+    const name = (p.fullName || "").trim();
+    if (!isEdit) {
+      if (!id) errors.studentId = "Student ID is required.";
+      else if (!/^\d{4}-\d{4}$/.test(id)) errors.studentId = "Use the format YYYY-NNNN with digits only, e.g. 2026-0001.";
+    }
+    if (!name) errors.fullName = "Full Name is required.";
+    else if (!/^[A-Za-z\u00C0-\u00FF][A-Za-z\u00C0-\u00FF.'\- ]{1,59}$/.test(name)) {
+      errors.fullName = "Use letters, spaces, . ' - only (2 to 60 characters). Numbers are not allowed.";
+    }
+    if (!p.program) errors.program = "Please select a program.";
+    return errors;
+  },
+
   createStudent(payload) {
-    if (!payload.studentId || !payload.fullName || !payload.program) {
-      return { success: false, error: "Validation Failed: All fields are required." };
+    const errors = this.validate(payload);
+    if (Object.keys(errors).length) {
+      return { success: false, error: "Validation Failed: " + Object.values(errors)[0] };
     }
 
     try {
@@ -25,8 +43,9 @@ const StudentController = {
   },
 
   updateStudent(studentId, payload) {
-    if (!payload.fullName || !payload.program) {
-      return { success: false, error: "Validation Failed: Name and Program are required for update." };
+    const errors = this.validate(payload, true);
+    if (Object.keys(errors).length) {
+      return { success: false, error: "Validation Failed: " + Object.values(errors)[0] };
     }
 
     try {
