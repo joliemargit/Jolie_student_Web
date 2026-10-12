@@ -11,17 +11,15 @@
   <div class="container">
     <header>
       <h1>Student Record Management System</h1>
-      
     </header>
 
-    <div class="grid">
-     
+    <main class="grid">
       <div>
         <!-- Feedback Alert Banner -->
-        <div id="feedbackAlert" class="alert hidden">
+        <div id="feedbackAlert" class="alert hidden" role="alert">
           <span id="alertIcon"></span>
           <span id="alertMessage"></span>
-          <button class="alert-close" onclick="hideFeedback()">&times;</button>
+          <button type="button" class="alert-close" id="alertClose" aria-label="Dismiss message">&times;</button>
         </div>
 
         <div class="card">
@@ -29,54 +27,54 @@
           <form id="studentForm" novalidate>
             <div class="form-group">
               <label for="studentId">Student ID <span class="required">*</span></label>
-              <input type="text" id="studentId" placeholder="e.g. 2026-0001" required>
-              <small class="error-msg" id="idError"></small>
+              <input type="text" id="studentId" placeholder="e.g. 2026-0001" inputmode="numeric" maxlength="9" autocomplete="off" aria-describedby="idError" required>
+              <small class="error-msg" id="idError" aria-live="polite"></small>
             </div>
-            
+
             <div class="form-group">
               <label for="fullName">Full Name <span class="required">*</span></label>
-              <input type="text" id="fullName" placeholder="e.g. Juan Cruz" required>
-              <small class="error-msg" id="nameError"></small>
+              <input type="text" id="fullName" placeholder="e.g. Juan Cruz" maxlength="60" autocomplete="name" aria-describedby="nameError" required>
+              <small class="error-msg" id="nameError" aria-live="polite"></small>
             </div>
 
             <div class="form-group">
               <label for="program">Academic Program <span class="required">*</span></label>
-              <select id="program" required>
+              <select id="program" aria-describedby="programError" required>
                 <option value="">Select Program...</option>
                 <option value="BS Information Technology">BS Information Technology</option>
                 <option value="BS Computer Science">BS Computer Science</option>
                 <option value="BS Information Systems">BS Information Systems</option>
               </select>
-              <small class="error-msg" id="programError"></small>
+              <small class="error-msg" id="programError" aria-live="polite"></small>
             </div>
 
             <div class="btn-group">
               <button type="submit" id="submitBtn" class="btn-primary">Submit Record</button>
-              <button type="button" id="cancelBtn" class="btn-secondary" style="display:none;">Cancel</button>
+              <button type="button" id="cancelBtn" class="btn-secondary" hidden>Cancel</button>
             </div>
           </form>
         </div>
       </div>
 
-      
       <div>
         <div class="card">
           <div class="table-header">
-            <h2>Database Records (SELECT)</h2>
+            <h2>Student Records</h2>
             <label class="checkbox-label">
               <input type="checkbox" id="showArchived"> Show Archived Records
             </label>
           </div>
 
-          <div class="table-responsive">
+          <div class="table-responsive" role="region" aria-label="Student records table" tabindex="0">
             <table>
+              <caption class="sr-only">List of student records with status and actions</caption>
               <thead>
                 <tr>
-                  <th>Student ID</th>
-                  <th>Full Name</th>
-                  <th>Program</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th scope="col">Student ID</th>
+                  <th scope="col">Full Name</th>
+                  <th scope="col">Program</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody id="studentTableBody">
@@ -86,10 +84,18 @@
           </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 
-  
+  <dialog id="confirmDialog" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+    <h2 id="confirmTitle">Archive this record?</h2>
+    <p id="confirmText"></p>
+    <div class="btn-group">
+      <button type="button" id="confirmNo" class="btn-secondary">Cancel</button>
+      <button type="button" id="confirmYes" class="btn-danger">Yes, archive</button>
+    </div>
+  </dialog>
+
   <script src="js/database.js"></script>
   <script src="js/controller.js"></script>
   <script src="js/app.js"></script>
